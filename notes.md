@@ -91,3 +91,23 @@ There's also the non-incluve version of some notations:
     if ... C > 0,
     0 <= C *o(g(n)) < f(n)
 
+## TDA
+Las estructuras de datos que vamos a definir ahora en adelante vamos a tener que 
+solo vamos a definir sus conceptos y detalles, pero su implementación no va a ser nuestro principal 
+enfoque. Sin embargo, vamos a continuar haciendo análisis de los algoritmos y las estructuras.
+
+## Listas
+Lineal, indexed, homogenia, dinámica en tamaño y contenido.
+Tiene métodos de Insertar, Eliminar, Modificar.
+
+Pueden ser implementadas con Arreglos, Single Linked o con pointer al siguiente elemento,
+Double Linked con pointer al siguiente y al previo elemento.
+
+### Lists - Arreglos
+La implementación general se basa en tener un pedazo de memoria asignada para 
+una lista de elementos la cual los métodos de inserción y eliminación se van a 
+basar en, apartir del tamaño del arreglo, copiar los elementos hacia la direcciaón
+
+### Lists - Linked
+Lo del siempre, son definidas como una lista de nodos que se apuntan entre sí, hay varias formas como 
+listas simples, circulares, o dobles.
