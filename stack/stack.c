@@ -2,15 +2,9 @@
 #include <stdlib.h>
 #include <limits.h>
 
-#ifndef STACK_DATA_TYPE
-
-#define STACK_DATA_TYPE int
-
-#endif /* STACK_DATA_TYPE */
-
 typedef struct stack_type stack_type;
 typedef struct stack_node {
-    const stack_type *data;
+    stack_type *data;
     struct stack_node *next;
 } stack_node;
 
@@ -55,7 +49,8 @@ stack_node *pop_stack (stack_node *sentinel) {
     return current_node;
 }
 
-void print_stack (stack_node *sentinel) {
+/* Only pointers since using an incomplete type */
+void print_stack_ptr (stack_node *sentinel) {
     stack_node *current_node;
     current_node = sentinel->next;
 
