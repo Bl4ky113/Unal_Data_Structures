@@ -2,25 +2,25 @@
 CC=/bin/gcc
 SHELL=/bin/sh
 
-TST_OUTPUT="teststack.out"
+TST_OUTPUT="testqueue.out"
 OBJ_OUTPUT="stack.o"
-LIB_OUTPUT="libstack.so"
 TST_OBJ_OUTPUT="stack_test.o"
-TST_LIB_OUTPUT="libstack_test.so"
+LIB_OUTPUT="libqueue.so"
+TST_LIB_OUTPUT="libqueue_test.so"
 
 ERROR_FLAGS=-Wall -Werror
 
-test: stack.c
-	$(CC) -o $(TST_OUTPUT) $(ERROR_FLAGS) stack.c -g
+test: queue.c queue.h
+	$(CC) -o $(TST_OUTPUT) $(ERROR_FLAGS) queue.c -g
 
-objects: stack.c stack.h
-	$(CC) -c -o $(OBJ_OUTPUT) $(ERROR_FLAGS) stack.c -fpic
+objects: queue.c queue.h
+	$(CC) -c -o $(OBJ_OUTPUT) $(ERROR_FLAGS) queue.c -fpic
+
+test-objects: queue.c queue.h
+	$(CC) -c -o $(TST_OBJ_OUTPUT) $(ERROR_FLAGS) queue.c -fpic -g
 
 lib: objects
 	$(CC) -shared -o $(LIB_OUTPUT) $(OBJ_OUTPUT)
-
-test-objects: stack.c stack.h
-	$(CC) -c -o $(TST_OBJ_OUTPUT) $(ERROR_FLAGS) stack.c -fpic -g
 
 test-lib: test-objects
 	$(CC) -shared -o $(TST_LIB_OUTPUT) $(TST_OBJ_OUTPUT) -g

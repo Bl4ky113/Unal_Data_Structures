@@ -1,6 +1,6 @@
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <limits.h>
 
 typedef struct stack_type stack_type;
 typedef struct stack_node {
@@ -36,17 +36,20 @@ int push_stack (stack_node *sentinel, stack_type *new_data) {
     return 0;
 }
 
-stack_node *pop_stack (stack_node *sentinel) {
+stack_type *pop_stack (stack_node *sentinel) {
     if (is_stack_empty(sentinel)) {
         return NULL;
     }
 
     stack_node *current_node;
+    stack_type *current_data;
     current_node = sentinel->next;
 
     sentinel->next = current_node->next;
 
-    return current_node;
+    current_data = current_node->data;
+    free(current_node);
+    return current_data;
 }
 
 /* Only pointers since using an incomplete type */
