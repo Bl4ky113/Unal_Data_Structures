@@ -22,18 +22,19 @@ extern stack_node *create_stack ();
 extern int is_stack_empty (stack_node *sentinel);
 extern int push_stack (stack_node *sentinel, stack_type *new_data);
 extern stack_type *pop_stack (stack_node *sentinel);
+extern stack_node *destroy_stack (stack_node *sentinel);
 extern void print_stack_ptr (stack_node *sentinel);
 
 #ifdef STACK_DATA_TYPE
 #ifdef STACK_DATA_FORMAT
 extern void print_stack (stack_node *sentinel) {
-    stack_node *current_node;
-    current_node = sentinel->next;
-
-    if (current_node == NULL) {
+    if (is_stack_empty(sentinel)) {
         printf("(Empty Stack)\n");
         return;
     }
+
+    stack_node *current_node;
+    current_node = sentinel->next;
     
     printf(STACK_DATA_FORMAT, *current_node->data);
     current_node = current_node->next;

@@ -52,15 +52,39 @@ stack_type *pop_stack (stack_node *sentinel) {
     return current_data;
 }
 
+stack_node *destroy_stack (stack_node *sentinel) {
+    stack_node *prev_node, *current_node;
+
+    current_node = sentinel->next;
+    while (current_node != NULL) {
+        prev_node = current_node;
+        current_node = current_node->next;
+
+        prev_node->next = NULL;
+        prev_node->data = NULL;
+
+        free(prev_node);
+    }
+
+    prev_node->next = NULL;
+    prev_node->data = NULL;
+    free(prev_node);
+
+    sentinel->next = NULL;
+    sentinel->data = NULL;
+    free(sentinel);
+    return NULL;
+}
+
 /* Only pointers since using an incomplete type */
 void print_stack_ptr (stack_node *sentinel) {
-    stack_node *current_node;
-    current_node = sentinel->next;
-
-    if (current_node == NULL) {
+    if (is_stack_empty(sentinel)) {
         printf("(Empty Stack)\n");
         return;
     }
+
+    stack_node *current_node;
+    current_node = sentinel->next;
     
     printf("%p", current_node->data);
     current_node = current_node->next;
