@@ -5,8 +5,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <stack.h>
-
 #include <limits.h>
 
 typedef int tree_data_type;
@@ -358,20 +356,39 @@ int height_tree (tree_node *base_node) {
     return left_height + 1;
 }
 
+void print_tree_ptr_recursive (tree_node *base_node, int current_depth) {
+    if (is_tree_empty(base_node)) {
+        return;
+    } else if (base_node == NULL) {
+        return;
+    }
+
+    int i = 1;
+    if (current_depth > 0) {
+        printf("|");
+        for (; i < current_depth; i++) {
+            printf("\t|");
+        }
+        printf("\t");
+    }
+
+    printf("(%d):(%p)\n", base_node->key, base_node->value);
+
+    if (base_node->left != NULL) {
+        print_tree_ptr_recursive(base_node->left, ++current_depth);
+        --current_depth;
+    }
+
+    if (base_node->right != NULL) {
+        print_tree_ptr_recursive(base_node->right, ++current_depth);
+    }
+
+    return;
+}
+
 void print_tree_ptr (tree_node *root) {
-    /*tree_node *prev_node, *current_node;*/
-    int num_nodes_left, num_nodes_right;
-
-    num_nodes_left = 0;
-    if (root->left != NULL) {
-        count_nodes_tree(root->left, &num_nodes_left);
-    }
-
-    num_nodes_right = 0;
-    if (root->right != NULL) {
-        count_nodes_tree(root->right, &num_nodes_right);
-    }
-
+    int placeholder = 0;
+    print_tree_ptr_recursive(root, placeholder);
     return;
 }
 
@@ -410,6 +427,8 @@ int main (int args, char **kargs) {
     insert_tree(my_tree, ((-1 * bar) + foo), &foo);
 	insert_tree(my_tree, ((-1 * qux) + foo), &bar);
 
+    print_tree_ptr(my_tree);
+
     search = search_tree(my_tree, qux);
     if (search != NULL) {
         printf("%d\n", *search);
@@ -431,10 +450,10 @@ int main (int args, char **kargs) {
     }
     
     for (int i = 20; i > 0; i--) {
-	    insert_tree(my_tree, (-1 * qux) + i, &qux);
+        insert_tree(my_tree, (-1 * qux) + i, &qux);
     } 
 
-	insert_tree(my_tree, foo - 3, &qux);
+    insert_tree(my_tree, foo - 3, &qux);
 
     for (int i = 20; i > 0; --i) {
         insert_tree(my_tree, qux - i, &foo);
@@ -528,14 +547,7 @@ int main (int args, char **kargs) {
     count_nodes_tree(my_tree, &result);
     printf("nodes: %d\n", result);
 
-    stack_node *my_stack = create_stack();
-    push_stack(my_stack, (void *) &foo);
-    push_stack(my_stack, (void *) &bar);
-    print_stack_ptr(my_stack);
-
-    my_stack = destroy_stack(my_stack);
-    printf("%p", my_stack);
-
-    /*print_tree_ptr(my_tree);*/
+    printf("\n");
+    print_tree_ptr(my_tree);
     return 0;
 }
