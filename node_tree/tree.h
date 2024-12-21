@@ -28,6 +28,7 @@ typedef struct tree_node {
     struct tree_node *left;
     struct tree_node *right;
 } tree_node;
+
 extern tree_node *create_tree ();
 extern int is_tree_empty (tree_node *root);
 extern int insert_tree (tree_node *root, tree_key_type *insert_key, tree_data_type *insert_value);
@@ -41,6 +42,9 @@ extern void count_nodes_tree (tree_node *root, int *node_count);
 extern int greater_left_depth (tree_node *base_node);
 extern int greater_right_depth (tree_node *base_node);
 extern int height_tree (tree_node *base_node);
+extern void tranversal_inorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index);
+extern void tranversal_preorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index);
+extern void tranversal_postorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index);
 extern void print_tree_ptr (tree_node *root);
 
 #ifdef TREE_DATA_FORMAT

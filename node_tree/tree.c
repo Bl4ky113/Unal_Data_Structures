@@ -366,13 +366,54 @@ void print_tree_ptr_recursive (tree_node *base_node, int current_depth) {
     printf(")\n");
 
     if (base_node->left != NULL) {
-        print_tree_ptr_recursive(base_node->left, ++current_depth);
-        --current_depth;
+        print_tree_ptr_recursive(base_node->left, current_depth + 1);
     }
 
     if (base_node->right != NULL) {
-        print_tree_ptr_recursive(base_node->right, ++current_depth);
+        print_tree_ptr_recursive(base_node->right, current_depth + 1);
     }
+
+    return;
+}
+
+void tranversal_inorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index) {
+    if (base_node == NULL) {
+        return;
+    }
+
+    tranversal_inorder_tree(base_node->left, value_list, value_list_index);
+
+    value_list[(*value_list_index)++] = base_node->value;
+
+    tranversal_inorder_tree(base_node->right, value_list, value_list_index);
+
+    return;
+}
+
+void tranversal_preorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index) {
+    if (base_node == NULL) {
+        return;
+    }
+
+    value_list[(*value_list_index)++] = base_node->value;
+
+    tranversal_inorder_tree(base_node->left, value_list, value_list_index);
+
+    tranversal_inorder_tree(base_node->right, value_list, value_list_index);
+
+    return;
+}
+
+void tranversal_postorder_tree (tree_node *base_node, tree_data_type **value_list, int *value_list_index) {
+    if (base_node == NULL) {
+        return;
+    }
+
+    tranversal_inorder_tree(base_node->left, value_list, value_list_index);
+
+    tranversal_inorder_tree(base_node->right, value_list, value_list_index);
+
+    value_list[(*value_list_index)++] = base_node->value;
 
     return;
 }

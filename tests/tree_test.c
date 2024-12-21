@@ -21,9 +21,25 @@ int compare_tree_key (tree_key_type *key1, tree_key_type *key2) {
     return 0;
 }
 
+void print_list (tree_data_type **list, int list_size) {
+    int i;
+    printf("[");
+    for (i = 0; i < list_size; i++) {
+        if (i != 0) {
+            printf(", ");
+        }
+
+        printf(TREE_DATA_FORMAT, *list[i]);
+    }
+    printf("]\n");
+
+    return;
+}
+
 int main (int args, char **kargs) {
     tree_node *my_tree, *node;
     tree_data_type *search, *deleted;
+    tree_data_type **value_list;
     double foo = 123.123;
     double bar = 456.321;
     double qux = 789.213;
@@ -164,5 +180,24 @@ int main (int args, char **kargs) {
     printf("\n");
     print_tree_ptr(my_tree);
     print_tree(my_tree);
+
+    result = 0;
+    int node_count = 0;
+    count_nodes_tree(my_tree, &result);
+    value_list = (tree_data_type **) malloc(sizeof(tree_data_type *) * result);
+    tranversal_inorder_tree(my_tree, value_list, &node_count);
+    printf("nodes tranversal inorder: %d\n", node_count);
+    print_list(value_list, node_count);
+
+    node_count = 0;
+    tranversal_preorder_tree(my_tree, value_list, &node_count);
+    printf("nodes tranversal preorder: %d\n", node_count);
+    print_list(value_list, node_count);
+
+    node_count = 0;
+    tranversal_postorder_tree(my_tree, value_list, &node_count);
+    printf("nodes tranversal postorder: %d\n", node_count);
+    print_list(value_list, node_count);
+
     return 0;
 }
