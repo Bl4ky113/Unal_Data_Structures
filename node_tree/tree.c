@@ -1,27 +1,22 @@
 
-#define STACK_DATA_TYPE void
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-#include <limits.h>
-
-typedef int tree_data_type;
-/*typedef struct tree_data_type tree_data_type;*/
-/*typedef struct tree_key_type tree_key_type; // Meanwhile */
-typedef int tree_key_type; // Meanwhile
+typedef struct tree_data_type tree_data_type;
+typedef struct tree_key_type tree_key_type;
 typedef struct tree_node {
     tree_data_type *value;
-    /*tree_key_type *key;*/
-    tree_key_type key;
+    tree_key_type *key;
     struct tree_node *left;
     struct tree_node *right;
 } tree_node;
 
+int compare_tree_key (tree_key_type *key1, tree_key_type *key2);
+
 tree_node *create_tree () {
     tree_node *new_tree = (tree_node *) malloc(sizeof(tree_node));
-    new_tree->key = INT_MIN;
+    new_tree->key = NULL;
     new_tree->value = NULL;
     new_tree->left = NULL;
     new_tree->right = NULL;
@@ -37,7 +32,7 @@ int is_tree_empty (tree_node *root) {
     return 0;
 }
 
-int insert_tree (tree_node *root, int insert_key, tree_data_type *insert_value) {
+int insert_tree (tree_node *root, tree_key_type *insert_key, tree_data_type *insert_value) {
     if (is_tree_empty(root)) {
         root->value = insert_value;
         root->key = insert_key;
@@ -50,16 +45,16 @@ int insert_tree (tree_node *root, int insert_key, tree_data_type *insert_value) 
 
     while (current_node != NULL) {
         prev_node = current_node;
-        if (insert_key < current_node->key) {
+        if (compare_tree_key(insert_key, current_node->key) == -1) {
             current_node = current_node->left;
-        } else if (insert_key > current_node->key) {
+        } else if (compare_tree_key(insert_key, current_node->key) == 1) {
             current_node = current_node->right;
         } else {
             return -1;
         }
     }
 
-    if (prev_node->key == insert_key) {
+    if (compare_tree_key(insert_key, prev_node->key) == 0) {
         return -1; /* Key already on tree. Returning error */
     }
     
@@ -68,8 +63,8 @@ int insert_tree (tree_node *root, int insert_key, tree_data_type *insert_value) 
     new_node->value = insert_value;
     new_node->left = NULL;
     new_node->right = NULL;
-
-    if (insert_key < prev_node->key) {
+    
+    if (compare_tree_key(insert_key, prev_node->key) == -1) { 
         prev_node->left = new_node;
     } else {
         prev_node->right = new_node;
@@ -78,7 +73,7 @@ int insert_tree (tree_node *root, int insert_key, tree_data_type *insert_value) 
     return 0;
 }
 
-tree_data_type *search_tree (tree_node *root, int query_key) {
+tree_data_type *search_tree (tree_node *root, tree_key_type *query_key) {
     if (is_tree_empty(root)) {
         return NULL;
     }
@@ -88,16 +83,16 @@ tree_data_type *search_tree (tree_node *root, int query_key) {
 
     while (current_node != NULL) {
         prev_node = current_node;
-        if (query_key < current_node->key) {
+        if (compare_tree_key(query_key, current_node->key) == -1) {
             current_node = current_node->left;
-        } else if (query_key > current_node->key) {
+        } else if (compare_tree_key(query_key, current_node->key) == 1) {
             current_node = current_node->right;
         } else {
             return current_node->value;
         }
     }
 
-    if (prev_node->key == query_key) {
+    if (compare_tree_key(query_key, prev_node->key) == 0) {
         return prev_node->value;
     }
 
@@ -118,22 +113,22 @@ tree_node *node_predecessor_tree (tree_node *base_node) {
     return prev_node; /* might be null */
 }
 
-tree_node *key_predecessor_tree (tree_node *root, int query_key) {
+tree_node *key_predecessor_tree (tree_node *root, tree_key_type *query_key) {
     tree_node *current_node;
 
     current_node = root;
 
     while (current_node != NULL) {
-        if (query_key < current_node->key) {
+        if (compare_tree_key(query_key, current_node->key) == -1) {
             current_node = current_node->left;
-        } else if (query_key > current_node->key) {
+        } else if (compare_tree_key(query_key, current_node->key) == 1) {
             current_node = current_node->right;
         } else {
             break;
         }
     }
 
-    if (current_node->key != query_key) {
+    if (compare_tree_key(query_key, current_node->key) != 0) {
         return NULL;
     }
 
@@ -154,51 +149,42 @@ tree_node *node_successor_tree (tree_node *base_node) {
     return prev_node; /* might be null */
 }
 
-tree_node *key_successor_tree (tree_node *root, int query_key) {
+tree_node *key_successor_tree (tree_node *root, tree_key_type *query_key) {
     tree_node *current_node;
 
     current_node = root;
 
     while (current_node != NULL) {
-        if (query_key < current_node->key) {
+        if (compare_tree_key(query_key, current_node->key) == -1) {
             current_node = current_node->left;
-        } else if (query_key > current_node->key) {
+        } else if (compare_tree_key(query_key, current_node->key) == 1) {
             current_node = current_node->right;
         } else {
             break;
         }
     }
 
-    if (current_node->key != query_key) {
+    if (compare_tree_key(query_key, current_node->key) == 0) {
         return NULL;
     }
 
     return node_successor_tree(current_node);
 }
 
-tree_data_type *delete_tree (tree_node *root, int query_key) {
+tree_data_type *delete_tree (tree_node *root, tree_key_type *query_key) {
     tree_node *prev_node, *current_node;
     tree_data_type *deleted_value;
     int previous_movement;
-
-    if (root->key == query_key) {
-        deleted_value = root->value;    
-
-        root->key = INT_MIN;
-        root->value = NULL;
-
-        return deleted_value;
-    }
 
     current_node = root;
     prev_node = current_node;
     previous_movement = 0;
     while (current_node->left != NULL || current_node->right != NULL) {
-        if (query_key < current_node->key) {
+        if (compare_tree_key(query_key, current_node->key) == -1) {
             prev_node = current_node;
             current_node = current_node->left;
             previous_movement = -1;
-        } else if (query_key > current_node->key) {
+        } else if (compare_tree_key(query_key, current_node->key) == 1) {
             prev_node = current_node;
             current_node = current_node->right;
             previous_movement = 1;
@@ -207,7 +193,7 @@ tree_data_type *delete_tree (tree_node *root, int query_key) {
         }
     }
     
-    if (current_node->key != query_key) {
+    if (compare_tree_key(query_key, current_node->key) != 0) {
         return NULL; /* key doesn't exist */
     }
 
@@ -233,7 +219,7 @@ tree_data_type *delete_tree (tree_node *root, int query_key) {
             prev_node->left = current_node->right;
         }
     } else {
-        /* not a leaf, both childs */
+        /* not a leaf, both childs, might be root */
         tree_node *succesor_node, *replacement_node;
         succesor_node = node_successor_tree(current_node);
 
@@ -372,7 +358,12 @@ void print_tree_ptr_recursive (tree_node *base_node, int current_depth) {
         printf("\t");
     }
 
-    printf("(%d):(%p)\n", base_node->key, base_node->value);
+    printf("(");
+    printf("%p", base_node->key);
+    printf("):");
+    printf("(");
+    printf("%p", base_node->value);
+    printf(")\n");
 
     if (base_node->left != NULL) {
         print_tree_ptr_recursive(base_node->left, ++current_depth);
@@ -390,164 +381,4 @@ void print_tree_ptr (tree_node *root) {
     int placeholder = 0;
     print_tree_ptr_recursive(root, placeholder);
     return;
-}
-
-int main (int args, char **kargs) {
-    tree_node *my_tree, *node;
-    tree_data_type *search, *deleted;
-    int foo, bar, qux, result;
-    foo = 123;
-    bar = 456;
-    qux = 789;
-
-    my_tree = create_tree();
-    insert_tree(my_tree, foo, &foo);
-	insert_tree(my_tree, bar, &bar);
-	insert_tree(my_tree, qux, &qux);
-
-    result = 0;
-    result = height_tree(my_tree);
-    printf("height: %d\n", result);
-
-	result = insert_tree(my_tree, bar, &bar);
-    if (result != 0) {
-        printf("ERR INSERTING %d\n", bar);
-    }
-	result = insert_tree(my_tree, qux, &qux);
-    if (result != 0) {
-        printf("ERR INSERTING %d\n", qux);
-    }
-
-    insert_tree(my_tree, -1 * foo, &foo);
-	insert_tree(my_tree, -1 * bar, &bar);
-	insert_tree(my_tree, -1 * qux, &qux);
-
-    insert_tree(my_tree, (bar - foo), &foo);
-	insert_tree(my_tree, (qux - (foo)), &bar);
-    insert_tree(my_tree, ((-1 * bar) + foo), &foo);
-	insert_tree(my_tree, ((-1 * qux) + foo), &bar);
-
-    print_tree_ptr(my_tree);
-
-    search = search_tree(my_tree, qux);
-    if (search != NULL) {
-        printf("%d\n", *search);
-    }
-
-    search = search_tree(my_tree, bar);
-    if (search != NULL) {
-        printf("%d\n", *search);
-    }
-
-    search = search_tree(my_tree, ((-1 * bar) + foo));
-    if (search != NULL) {
-        printf("%d\n", *search);
-    }
-
-    search = search_tree(my_tree, ((-1 * bar) + foo) - 1);
-    if (search == NULL) {
-        printf("NOT FOUND, %p\n", search);
-    }
-    
-    for (int i = 20; i > 0; i--) {
-        insert_tree(my_tree, (-1 * qux) + i, &qux);
-    } 
-
-    insert_tree(my_tree, foo - 3, &qux);
-
-    for (int i = 20; i > 0; --i) {
-        insert_tree(my_tree, qux - i, &foo);
-    } 
-
-    node = key_predecessor_tree(my_tree, qux);
-    if (node != NULL) {
-        printf("predecesor %d: %d:%d\n", qux, node->key, *node->value);
-    }
-
-    node = key_predecessor_tree(my_tree, foo);
-    if (node != NULL) {
-        printf("predecesor %d: %d:%d\n", foo, node->key, *node->value);
-    }
-
-    node = key_successor_tree(my_tree, foo);
-    if (node != NULL) {
-        printf("succesor %d: %d:%d\n", foo, node->key, *node->value);
-    }
-
-    node = key_successor_tree(my_tree, -1 * qux);
-    if (node != NULL) {
-        printf("succesor %d: %d:%d\n", -1 * qux, node->key, *node->value);
-    }
-
-    result = 0;
-    count_nodes_tree(my_tree, &result);
-    printf("nodes: %d\n", result);
-
-    deleted = delete_tree(my_tree, qux - 1);
-    if (deleted != NULL) {
-        printf("deleted %d: %d\n", qux - 1, *deleted);
-    } else {
-        printf("not deleted %d: %p\n", qux - 1, deleted);
-    }
-
-    deleted = delete_tree(my_tree, qux);
-    if (deleted != NULL) {
-        printf("deleted %d: %d\n", qux, *deleted);
-    } else {
-        printf("not deleted %d: %p\n", qux, deleted);
-    }
-
-    deleted = delete_tree(my_tree, qux);
-    if (deleted != NULL) {
-        printf("deleted %d: %d\n", qux, *deleted);
-    } else {
-        printf("not deleted %d: %p\n", qux, deleted);
-    }
-    deleted = delete_tree(my_tree, qux);
-    if (deleted != NULL) {
-        printf("deleted %d: %d\n", qux, *deleted);
-    } else {
-        printf("not deleted %d: %p\n", qux, deleted);
-    }
-    search = search_tree(my_tree, qux);
-    if (search == NULL) {
-        printf("NOT FOUND %d, %p\n", qux, search);
-    }
-
-    deleted = delete_tree(my_tree, -1 * bar);
-    if (deleted != NULL) {
-        printf("deleted %d: %d\n", -1 * bar, *deleted);
-    } else {
-        printf("not deleted %d: %p\n", -1 * bar, deleted);
-    }
-    search = search_tree(my_tree, -1 * bar);
-    if (search == NULL) {
-        printf("NOT FOUND %d, %p\n", -1 * bar, search);
-    }
-    search = search_tree(my_tree, (-1 * bar) + foo);
-    if (search == NULL) {
-        printf("NOT FOUND %d, %p\n", (-1 * bar) + foo, search);
-    } else {
-        printf("FOUND %d, %d\n", (-1 * bar) + foo, *search);
-    }
-
-    result = 0;
-    result = greater_left_depth(my_tree);
-    printf("greater_left_depth: %d\n", result);
-
-    result = 0;
-    result = greater_right_depth(my_tree);
-    printf("greater_right_depth: %d\n", result);
-
-    result = 0;
-    result = height_tree(my_tree);
-    printf("height: %d\n", result);
-
-    result = 0;
-    count_nodes_tree(my_tree, &result);
-    printf("nodes: %d\n", result);
-
-    printf("\n");
-    print_tree_ptr(my_tree);
-    return 0;
 }
