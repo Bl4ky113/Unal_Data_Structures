@@ -69,9 +69,9 @@ int main (int args, char **kargs) {
         printf("ERR INSERTING %lf\n", qux);
     }
 
-    insert_tree(my_tree, &foo_inv, &foo);
-	insert_tree(my_tree, &bar_inv, &bar);
-	insert_tree(my_tree, &qux_inv, &qux);
+    insert_tree(my_tree, &foo_inv, &foo_inv);
+	insert_tree(my_tree, &bar_inv, &bar_inv);
+	insert_tree(my_tree, &qux_inv, &qux_inv);
 
     insert_tree(my_tree, &foo_1, &foo_1);
 	insert_tree(my_tree, &foo_2, &foo_2);
@@ -177,7 +177,6 @@ int main (int args, char **kargs) {
     count_nodes_tree(my_tree, &result);
     printf("nodes: %d\n", result);
 
-    printf("\n");
     print_tree_ptr(my_tree);
     print_tree(my_tree);
 
