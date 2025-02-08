@@ -213,7 +213,7 @@ int AVLTree::insert (int new_key, int new_value) {
 }
 
 int AVLTree::remove (int delete_key) {
-    if (height == 0 || root == NULL) {
+    if (nodes == 0 || root == NULL) {
         return -1;
     } else if (root->key == delete_key) {
         tree_node *succesor_node, *replacement_node;
@@ -415,40 +415,47 @@ AVLTree::tree_node *AVLTree::ceiling (int input_key) {
 }
 
 void AVLTree::print () {
-    int depth = 0;
-    print_recursive(root, depth);
-    return;
-}
-
-void AVLTree::print_recursive (tree_node *node, int current_depth) {
-    if (nodes == 0) {
-        return;
-    } else if (node == NULL) {
-        return;
+    if (nodes == 0 || root == NULL) {
+        cout << "()\n";
     }
 
-    int i = 1;
-    if (current_depth > 0) {
-        printf("|");
-        for (; i < current_depth; i++) {
-            printf("\t|");
+    tree_node *tmp_node;
+    stack<tree_node *> print_stack;
+    stack<int> height_stack;
+    int current_depth;
+    
+    tmp_node = root;
+    current_depth = 0;
+
+    while (tmp_node != NULL) {
+        if (current_depth > 0) {
+            cout << '|';
+            for (int i = 1; i < current_depth; i++) {
+                cout << '\t' << '|';
+            }
+            cout << '\t';
         }
-        printf("\t");
-    }
 
-    printf("(");
-    printf("%d", node->key);
-    printf("):");
-    printf("(");
-    printf("%d", node->value);
-    printf(");%d\n", node->height);
+        cout << "(" << tmp_node->key << ") : (" << tmp_node->value << "): " << tmp_node->height << "\n"; 
 
-    if (node->right != NULL) {
-        print_recursive(node->right, current_depth + 1);
-    }
+        if (tmp_node->left != NULL) {
+            print_stack.push(tmp_node->left);
+            height_stack.push(root->height - tmp_node->height + 1);
+        }
 
-    if (node->left != NULL) {
-        print_recursive(node->left, current_depth + 1);
+        if (tmp_node->right != NULL) {
+            print_stack.push(tmp_node->right);
+            height_stack.push(root->height - tmp_node->height + 1);
+        }
+
+        if (print_stack.empty()) {
+            break;
+        }
+
+        tmp_node = print_stack.top();
+        current_depth = height_stack.top();
+        print_stack.pop();
+        height_stack.pop();
     }
 
     return;
@@ -496,6 +503,8 @@ int main (int args, char **vargs) {
     bar = foo->remove(3);
     cout << bar << "\t";
     bar = foo->remove(31);
+    cout << bar << "\t";
+    bar = foo->remove(-3);
     cout << bar << "\n";
     foo->print();
     return 0;
