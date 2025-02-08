@@ -397,9 +397,9 @@ void tranversal_preorder_tree (tree_node *base_node, tree_data_type **value_list
 
     value_list[(*value_list_index)++] = base_node->value;
 
-    tranversal_inorder_tree(base_node->left, value_list, value_list_index);
+    tranversal_preorder_tree(base_node->left, value_list, value_list_index);
 
-    tranversal_inorder_tree(base_node->right, value_list, value_list_index);
+    tranversal_preorder_tree(base_node->right, value_list, value_list_index);
 
     return;
 }
@@ -409,9 +409,9 @@ void tranversal_postorder_tree (tree_node *base_node, tree_data_type **value_lis
         return;
     }
 
-    tranversal_inorder_tree(base_node->left, value_list, value_list_index);
+    tranversal_postorder_tree(base_node->left, value_list, value_list_index);
 
-    tranversal_inorder_tree(base_node->right, value_list, value_list_index);
+    tranversal_postorder_tree(base_node->right, value_list, value_list_index);
 
     value_list[(*value_list_index)++] = base_node->value;
 
