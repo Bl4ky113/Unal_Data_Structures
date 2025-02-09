@@ -382,6 +382,7 @@ AVLTree::tree_node *AVLTree::floor (int input_key) {
     AVLTree::tree_node *current_node, *tmp_node;
     
     tmp_node = root;
+    current_node = NULL;
     while (tmp_node != NULL) {
         if (tmp_node->key < input_key) {
             current_node = tmp_node;
@@ -389,6 +390,7 @@ AVLTree::tree_node *AVLTree::floor (int input_key) {
         } else if (tmp_node->key > input_key) {
             tmp_node = tmp_node->right;
         } else {
+            current_node = tmp_node;
             break;
         }
     }
@@ -488,24 +490,35 @@ int main (int args, char **vargs) {
     foo->print();
     cout << bar << "\n";
     cout << foo->height << " " << foo->nodes << "\n";
-    bar_2 = foo->first();
-    cout << bar_2->key << " " << bar_2->value << "\n";
-    bar_2 = foo->last();
-    cout << bar_2->key << " " << bar_2->value << "\n";
-    bar_2 = foo->floor(32);
-    cout << bar_2->key << " " << bar_2->value << "\n";    
-    bar_2 = foo->ceiling(32);
-    cout << bar_2->key << " " << bar_2->value << "\n";
-    bar = foo->remove(2);
-    cout << bar << "\t";
-    bar = foo->remove(6);
-    cout << bar << "\t";
-    bar = foo->remove(3);
-    cout << bar << "\t";
-    bar = foo->remove(31);
-    cout << bar << "\t";
-    bar = foo->remove(-3);
-    cout << bar << "\n";
-    foo->print();
+    //bar_2 = foo->first();
+    //cout << bar_2->key << " " << bar_2->value << "\n";
+    //bar_2 = foo->last();
+    //cout << bar_2->key << " " << bar_2->value << "\n";
+    bar_2 = foo->floor(31);
+    cout << "Searching floor of 31, found: " << bar_2->key << " " << bar_2->value << "\n";    
+    bar_2 = foo->floor(4);
+    cout << "Searching floor of 4, found: " << bar_2->key << " " << bar_2->value << "\n";    
+    bar_2 = foo->floor(13);
+    cout << "Searching floor of 13, found: " << bar_2->key << " " << bar_2->value << "\n";    
+    bar_2 = foo->floor(-1000);
+    cout << "Searching floor of -1000, found: " << bar_2 << " "; 
+    if (bar_2 == NULL) {
+        cout << "found null \n";
+    } else {
+        cout << "found" << bar_2->key << " " << bar_2->value << "\n";
+    } 
+    //bar_2 = foo->ceiling(32);
+    //cout << bar_2->key << " " << bar_2->value << "\n";
+    //bar = foo->remove(2);
+    //cout << bar << "\t";
+    //bar = foo->remove(6);
+    //cout << bar << "\t";
+    //bar = foo->remove(3);
+    //cout << bar << "\t";
+    //bar = foo->remove(31);
+    //cout << bar << "\t";
+    //bar = foo->remove(-3);
+    //cout << bar << "\n";
+    //foo->print();
     return 0;
 }
